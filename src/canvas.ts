@@ -19,6 +19,7 @@ let settings = {
         gravity: 25,
         velocity: 25,
     },
+    selectedStore: writable<undefined | CircleObject>(undefined),
 
     stepsPerFrame: 10,
 }
@@ -42,8 +43,30 @@ function removeSelected() {
     if(selected) {
         let idx = objects.findIndex(v => v === selected);
         objects.splice(idx, 1); 
+        settings.selectedStore.set(undefined);
         selected = undefined;
     }
+}
+
+const experiments: Record<string, () => CircleObject[]> = {
+    "2-object-collision": () => {
+        let xPos = 100;
+        let yOffset = window.innerHeight / 4;
+
+        let pos1 = new Vec2(xPos, window.innerHeight / 2 - yOffset);
+        let pos2 = new Vec2(xPos, window.innerHeight / 2 + yOffset);
+        let target = new Vec2(window.innerWidth / 2, window.innerHeight / 2);
+        let obj1 = new CircleObject(pos1, settings.editingCircle.radius, settings.editingCircle.mass);
+        obj1["vel"] = target.sub(pos1);
+        let obj2 = new CircleObject(pos2, settings.editingCircle.radius, settings.editingCircle.mass);
+        obj2["vel"] = target.sub(pos2);
+
+        return [obj1, obj2]
+    }
+}
+function useExperiment(name: string) {
+    objects = experiments[name]();
+    selected = undefined;
 }
 
 function init(element: HTMLDivElement) {
@@ -93,9 +116,11 @@ function init(element: HTMLDivElement) {
         for(const obj of objects) {
             if(obj["pos"].sub(pointerPos).magnitude() < obj.radius) {
                 selected = obj;
+                settings.selectedStore.set(selected);
                 return;
             }
         }
+        settings.selectedStore.set(undefined);
         selected = undefined;
     });
 
@@ -435,4 +460,6 @@ export {
     clearPaper,
     enableMotion,
     removeSelected,
+    useExperiment,
+    CircleObject,
 }

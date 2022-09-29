@@ -11,6 +11,9 @@
 
     setInterval(_ => framerate = canvas.getFramerate().toFixed(), 100);
 
+    let selected: undefined | canvas.CircleObject = undefined;
+    canvas.settings.selectedStore.subscribe(v => { selected = v });
+
     onMount(() => {
         canvas.init(canvasContainer);
     });
@@ -21,9 +24,11 @@
     <div class="ui">
         <div class="heading">Simulation</div>
         <div>fps: {framerate}</div>
-        <label for="check-running">running: </label>
-        <input type="checkbox" id="check-running" bind:checked={canvas.settings.running}>
-        <Slider label="steps" bind:value={canvas.settings.stepsPerFrame} min={1} max={1000} step={10}/>
+        <div class="running">
+            <label for="check-running" class="btn">running: </label>
+            <input type="checkbox" id="check-running" bind:checked={canvas.settings.running}>
+        </div>
+        <Slider label="steps" bind:value={canvas.settings.stepsPerFrame} min={1} max={1000} step={1}/>
         <hr>
         <div class="heading">World</div>
         <Slider label="restetution" bind:value={canvas.settings.world.restetution} min={0} max={1} step={0.01}/>
@@ -31,7 +36,6 @@
         <div class="heading">Object</div>
         <Slider label="radius" bind:value={canvas.settings.editingCircle.radius} min={10} max={100} step={1}/>
         <Slider label="mass" bind:value={canvas.settings.editingCircle.mass} min={1}/>
-        <div class="btn" on:click={_ => canvas.removeSelected()}>delete selected</div>
         <hr>
         <div class="heading">Paper</div>
         <Slider label="draw freq" bind:value={canvas.settings.traceFreq} min={1} max={60} step={1} unit="Hz"/>
@@ -42,7 +46,14 @@
         <Slider label="gravity" bind:value={canvas.settings.world.gravity} min={0} max={100} step={1}/>
         <Slider label="velocity" bind:value={canvas.settings.world.velocity} min={0} max={100} step={1}/>
         <hr>
-        <div class="btn">pause</div>
+        <div class="heading">Experiments</div>
+        <div class="btn" on:click={_ => canvas.useExperiment("2-object-collision")}>2 Object Collision</div>
+        {#if selected}
+            <hr>
+            <Slider label="radius" bind:value={selected.radius} min={10} max={100} step={1}/>
+            <Slider label="mass" bind:value={selected.mass} min={1}/>
+            <div class="btn" on:click={_ => canvas.removeSelected()}>delete selected</div>
+        {/if}
     </div>
 </div>
 
@@ -68,6 +79,10 @@
         width: 200px;
         box-sizing: border-box;
         user-select: none;
+    }
+
+    .running {
+        margin: 1rem 0;
     }
 
     .heading {
