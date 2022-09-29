@@ -18,6 +18,7 @@ let settings = {
         motionEnabled: false,
         gravity: 25,
         velocity: 25,
+        airDensity: 10,
     },
     selectedStore: writable<undefined | CircleObject>(undefined),
 
@@ -255,7 +256,7 @@ class CircleObject {
         this.vel = nextVel;
 
         // this.vel = this.vel.add(new Vec2(0, 500).multS(dt));
-        let density = 0.00001;
+        let density = settings.world.airDensity * 0.000001;
         let dragCoeff = 0.47;
         let drag = this.vel.magnitude() * (-density * dragCoeff * this.radius);
         this.vel = this.vel.add(this.vel.multS(dt * drag));

@@ -32,6 +32,7 @@
         <hr>
         <div class="heading">World</div>
         <Slider label="restetution" bind:value={canvas.settings.world.restetution} min={0} max={1} step={0.01}/>
+        <Slider label="density" bind:value={canvas.settings.world.airDensity} min={0} max={100} step={0.1}/>
         <hr>
         <div class="heading">Object</div>
         <Slider label="radius" bind:value={canvas.settings.editingCircle.radius} min={10} max={100} step={1}/>
