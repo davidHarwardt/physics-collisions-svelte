@@ -63,7 +63,30 @@ const experiments: Record<string, () => CircleObject[]> = {
         obj2["vel"] = target.sub(pos2);
 
         return [obj1, obj2]
-    }
+    },
+    "pool": () => {
+        let center = new Vec2(window.innerWidth, window.innerHeight).divS(2);
+        let radius = settings.editingCircle.radius;
+        let mass = settings.editingCircle.mass;
+        let initialBallPos = center.sub(new Vec2(center.x / 2, 0));
+        let initialBall = new CircleObject(initialBallPos, radius, mass);
+        initialBall["vel"] = new Vec2(4000, 0);
+
+        let ballsCenter = center.add(new Vec2(center.x / 2 - 500, 0));
+        let balls: CircleObject[] = [];
+        const angleV = Math.sin(Math.PI * 2 / 3);
+        for(let i = 0; i < 5; i++) {
+            for(let j = 0; j < i + 1; j++) {
+                let pos = ballsCenter.add(new Vec2(i * angleV, -(i / 2) + j).multS(radius * 2 + 5));
+                balls.push(new CircleObject(pos, radius, mass));
+            }
+        }
+        
+        return [initialBall, ...balls]
+    },
+    "clear": () => {
+        return []
+    },
 }
 function useExperiment(name: string) {
     objects = experiments[name]();
@@ -84,7 +107,7 @@ function init(element: HTMLDivElement) {
                 draggingNewCircle = { pos: circlePos.copy(), pointer: v.id };
             }
 
-            if(selected && selected["pos"].add(selected["vel"].divS(10)).sub(v.pos).magnitude() < selected.radius) {
+            if(!settings.running && selected && selected["pos"].add(selected["vel"].divS(10)).sub(v.pos).magnitude() < selected.radius) {
                 list.get(v.id)!.data.draggingVel = selected;
                 return;
             }

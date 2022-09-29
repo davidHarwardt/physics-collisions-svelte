@@ -44,7 +44,7 @@
             type="number"
             value={value}
             bind:this={numberInputElement}
-            on:input={ev => { value = parseFloat(ev.currentTarget.value); if(isNaN(value)){value = 0}}}>
+            on:change={ev => { value = parseFloat(ev.currentTarget.value); if(isNaN(value)){value = 0}}}>
         {unit ?? ""}
     </div>
     <!-- <input type="range" bind:value min={min} max={max} step={step ?? 0.01}> -->

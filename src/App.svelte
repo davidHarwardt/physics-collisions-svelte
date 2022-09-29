@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { bind } from "svelte/internal";
     import * as canvas from "./canvas";
+    import Collapsible from "./lib/Collapsible.svelte";
     import Slider from "./lib/Slider.svelte";
     let canvasContainer: HTMLDivElement;
 
@@ -22,38 +23,46 @@
 <div class="container">
     <div class="canvas-container" bind:this={canvasContainer}></div>
     <div class="ui">
-        <div class="heading">Simulation</div>
+        <div class="heading">simulation</div>
         <div>fps: {framerate}</div>
         <div class="running">
             <label for="check-running" class="btn">running: </label>
             <input type="checkbox" id="check-running" bind:checked={canvas.settings.running}>
         </div>
         <Slider label="steps" bind:value={canvas.settings.stepsPerFrame} min={1} max={1000} step={1}/>
-        <hr>
-        <div class="heading">World</div>
-        <Slider label="restetution" bind:value={canvas.settings.world.restetution} min={0} max={1} step={0.01}/>
-        <Slider label="density" bind:value={canvas.settings.world.airDensity} min={0} max={100} step={0.1}/>
-        <hr>
-        <div class="heading">Object</div>
-        <Slider label="radius" bind:value={canvas.settings.editingCircle.radius} min={10} max={100} step={1}/>
-        <Slider label="mass" bind:value={canvas.settings.editingCircle.mass} min={1}/>
-        <hr>
-        <div class="heading">Paper</div>
-        <Slider label="draw freq" bind:value={canvas.settings.traceFreq} min={1} max={60} step={1} unit="Hz"/>
-        <div class="btn" on:click={_ => canvas.clearPaper()}>clear</div>
-        <hr>
-        <div class="heading">Device Motion</div>
-        <div class="btn" on:click={_ => canvas.enableMotion()}>{$motionEnabled ? "disable" : "enable"}</div>
-        <Slider label="gravity" bind:value={canvas.settings.world.gravity} min={0} max={100} step={1}/>
-        <Slider label="velocity" bind:value={canvas.settings.world.velocity} min={0} max={100} step={1}/>
-        <hr>
-        <div class="heading">Experiments</div>
-        <div class="btn" on:click={_ => canvas.useExperiment("2-object-collision")}>2 Object Collision</div>
+
+        <Collapsible name="world" collapsed>
+            <Slider label="restetution" bind:value={canvas.settings.world.restetution} min={0} max={1} step={0.01}/>
+            <Slider label="density" bind:value={canvas.settings.world.airDensity} min={0} max={100} step={0.1}/>
+        </Collapsible>
+
+        <Collapsible name="object" collapsed>
+            <Slider label="radius" bind:value={canvas.settings.editingCircle.radius} min={10} max={100} step={1}/>
+            <Slider label="mass" bind:value={canvas.settings.editingCircle.mass} min={1}/>
+        </Collapsible>
+
+        <Collapsible name="paper" collapsed>
+            <Slider label="draw freq" bind:value={canvas.settings.traceFreq} min={1} max={60} step={1} unit="Hz"/>
+            <div class="btn" on:click={_ => canvas.clearPaper()}>clear</div>
+        </Collapsible>
+
+        <Collapsible name="device motion" collapsed>
+            <div class="btn" on:click={_ => canvas.enableMotion()}>{$motionEnabled ? "disable" : "enable"}</div>
+            <Slider label="gravity" bind:value={canvas.settings.world.gravity} min={0} max={100} step={1}/>
+            <Slider label="velocity" bind:value={canvas.settings.world.velocity} min={0} max={100} step={1}/>
+        </Collapsible>
+
+        <Collapsible name="experiments" collapsed>
+            <div class="btn" on:click={_ => canvas.useExperiment("2-object-collision")}>2 object collision</div>
+            <div class="btn" on:click={_ => canvas.useExperiment("pool")}>pool</div>
+            <div class="btn" on:click={_ => canvas.useExperiment("clear")}>clear objects</div>
+        </Collapsible>
         {#if selected}
-            <hr>
-            <Slider label="radius" bind:value={selected.radius} min={10} max={100} step={1}/>
-            <Slider label="mass" bind:value={selected.mass} min={1}/>
-            <div class="btn" on:click={_ => canvas.removeSelected()}>delete selected</div>
+            <Collapsible name="selected">
+                <Slider label="radius" bind:value={selected.radius} min={10} max={100} step={1}/>
+                <Slider label="mass" bind:value={selected.mass} min={1}/>
+                <div class="btn" on:click={_ => canvas.removeSelected()}>delete selected</div>
+            </Collapsible>
         {/if}
     </div>
 </div>
@@ -80,6 +89,8 @@
         width: 200px;
         box-sizing: border-box;
         user-select: none;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
     }
 
     .running {
