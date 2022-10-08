@@ -64,6 +64,10 @@
                 <div class="btn" on:click={_ => canvas.removeSelected()}>delete selected</div>
             </Collapsible>
         {/if}
+        <Collapsible name="info" collapsed>
+            <a href="https://github.com/davidHarwardt/physics-collisions-svelte/releases/latest">download offline file</a>
+            <a href="https://github.com/davidHarwardt/physics-collisions-svelte">source</a>
+        </Collapsible>
     </div>
 </div>
 
