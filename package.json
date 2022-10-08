@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "build-single-file": "vite build --mode single-bundle",
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
@@ -17,7 +18,9 @@
     "svelte-preprocess": "^4.10.7",
     "tslib": "^2.4.0",
     "typescript": "^4.6.4",
-    "vite": "^3.1.0"
+    "vite": "^3.1.0",
+    "vite-plugin-pwa": "^0.13.1",
+    "vite-plugin-singlefile": "^0.12.2"
   },
   "dependencies": {
     "@david.harwardt/canvas-2d": "^0.1.3",
