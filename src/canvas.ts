@@ -93,6 +93,15 @@ function useExperiment(name: string) {
     selected = undefined;
 }
 
+function save() {
+    let link = document.createElement("a");
+    link.setAttribute("download", "canvas.png");
+    let blob = backgroundCanvas.element.toDataURL("image/png");
+    let url = blob.replace(/^data:image\/png/,'data:application/octet-stream');
+    link.setAttribute('href', url);
+    link.click();
+}
+
 function init(element: HTMLDivElement) {
     backgroundCanvas = Canvas2d.fromParent(element);
     canvas = Canvas2d.fromParent(element);
@@ -486,4 +495,5 @@ export {
     removeSelected,
     useExperiment,
     CircleObject,
+    save,
 }

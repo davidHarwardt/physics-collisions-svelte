@@ -44,6 +44,7 @@
         <Collapsible name="paper" collapsed>
             <Slider label="draw freq" bind:value={canvas.settings.traceFreq} min={1} max={60} step={1} unit="Hz"/>
             <div class="btn" on:click={_ => canvas.clearPaper()}>clear</div>
+            <div class="btn" on:click={_ => canvas.save()}>save</div>
         </Collapsible>
 
         <Collapsible name="device motion" collapsed>
